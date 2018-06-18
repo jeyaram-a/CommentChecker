@@ -3,14 +3,12 @@ SOW = '^'
 EOW = '$'
 
 class DAWG_node :
-
     def __init__(self, char):
         self.char = char
         self.next = {}
 
 
 class DAWG :
-
     def __init__(self):
         self.count = 0
         self.start = DAWG_node(SOW)
@@ -18,7 +16,6 @@ class DAWG :
 
     @staticmethod
     def print_assist(current, word):
-
         if EOW in current.next:
             print(word)
             return
@@ -47,6 +44,33 @@ class DAWG :
                 current = current.next[letter]
 
         current.next[EOW] = DAWG_node(EOW)
+
+    @staticmethod
+    def enqueue(list, node):
+        list.append(node)
+
+    @staticmethod
+    def dequeue(list):
+        first = list[0]
+        del list[0]
+        return first
+
+    def reduce(self):
+        parent = []
+        children = []
+
+        current = self.start
+
+        for letter in current.next:
+            children.append(current.next[letter])
+
+        children.append("NULL")
+        find_identical_letters(children)
+
+
+
+
+
 
 
 
