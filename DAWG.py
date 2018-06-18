@@ -1,29 +1,60 @@
 
+SOW = '^'
+EOW = '$'
+
 class DAWG_node :
 
-    def __init__(self, char) :
+    def __init__(self, char):
         self.char = char
-        self.next = None
+        self.next = {}
+
 
 class DAWG :
 
     def __init__(self):
-        self.start = {}
-        char = 'a'
+        self.count = 0
+        self.start = DAWG_node(SOW)
+        self.start.next = {}
 
-        for i in range(0, 26) :
-            self.start[char] = DAWG_node(char)
-            char = chr(ord(char)+1)
+    @staticmethod
+    def print_assist(current, word):
 
+        if EOW in current.next:
+            print(word)
+            return
+
+        for letter in current.next:
+            DAWG.print_assist(current.next[letter], word+letter)
 
     def print(self):
-        char = 'a'
-        for i in range(0, 26) :
-            node = self.start[char]
+        current = self.start
+        word = ""
 
-            while node != None :
-                print(node.char)
-                node = node.next
+        for letter in current.next:
+            DAWG.print_assist(current.next[letter], word+letter)
 
-            char = chr(ord(char)+1)
 
+    def add(self, word):
+
+        self.count += 1
+        current = self.start
+        for letter in word:
+            if letter not in current.next:
+                current.next[letter] = DAWG_node(letter)
+                current = current.next[letter]
+                continue
+            else:
+                current = current.next[letter]
+
+        current.next[EOW] = DAWG_node(EOW)
+
+
+
+
+d = DAWG()
+d.add("amma")
+d.add("achan")
+d.add("cat")
+d.add("company")
+d.add("zeta")
+d.print()
