@@ -55,6 +55,42 @@ class DAWG :
         del list[0]
         return first
 
+    @staticmethod
+    def find_unique_node_for_each_letter(children):
+        alphabets = {}
+        for node in children[0:len(children)-1]:
+            if node.char not in alphabets:
+                alphabets[node.char] = node
+
+        return alphabets
+
+
+    @staticmethod
+    def enqueue_children(children):
+        i = 0
+        while children[i] != "NULL":
+            for letter in children[i].next:
+                children.append(children[i].next[letter])
+            i += 1
+
+        DAWG.enqueue(children, "NULL")
+
+    @staticmethod
+    def detach_parents(parent, children):
+
+        while children[0] != "NULL":
+            DAWG.enqueue(parent, children[0])
+            DAWG.dequeue(children)
+
+        DAWG.dequeue(children)
+
+    @staticmethod
+    def remap(parent, unique_nodes_for_each_letter):
+        for parent_node in parent:
+            for key in parent_node.next:
+                next_letter = parent_node.next[key]
+                parent_node.next[key] = unique_nodes_for_each_letter[key]
+
     def reduce(self):
         parent = []
         children = []
@@ -65,20 +101,34 @@ class DAWG :
             children.append(current.next[letter])
 
         children.append("NULL")
-        find_identical_letters(children)
+
+        #while len(children) != 0:
+        for i in range(0,1):
+            DAWG.enqueue_children(children)
+            DAWG.detach_parents(parent, children)
+            unique_nodes_for_each_letter = DAWG.find_unique_node_for_each_letter(children)
+            print("starting to remap")
+            DAWG.remap(parent, unique_nodes_for_each_letter)
+            print("done remapping")
 
 
 
-
+def print_(l):
+    for x in l:
+        if type(x) == str:
+            print(x)
+        else:
+            print(x.char)
 
 
 
 
 
 d = DAWG()
-d.add("amma")
 d.add("achan")
+d.add("aaryan")
+d.add("ball")
 d.add("cat")
-d.add("company")
-d.add("zeta")
+d.print()
+d.reduce()
 d.print()
