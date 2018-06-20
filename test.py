@@ -1,18 +1,13 @@
-class A:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+import os
 
-a = A(1, 2)
-b = A(3, 4)
+for root, dirs, files in os.walk(".", topdown=False):
+    for name in files:
+        print(os.path.join(root, name))
 
-l = []
-l.append(a)
-l.append("hello")
-l.append(b)
+    print("printing directoreis ................")
+    for name in dirs:
+        print(os.path.join(root, name))
 
-print(l)
 
-for x in l:
-    if x == "hello":
-        print("found")
+print("\n\n\n\n")
+

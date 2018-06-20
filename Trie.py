@@ -1,4 +1,3 @@
-
 SOW = '^'
 EOW = '$'
 
@@ -9,7 +8,6 @@ class Trie_node:
 
     def toString(self):
         return str(self.letter)
-
 
 
 class Trie:
@@ -58,9 +56,10 @@ class Trie:
 
     @staticmethod
     def print_assist(current, word):
+
         if EOW in current.next:
             print(word)
-            return
+
         for letter in current.next:
             Trie.print_assist(current.next[letter], word+letter)
 
