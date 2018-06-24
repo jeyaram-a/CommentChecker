@@ -1,19 +1,8 @@
-import time
-import sys
-def progress(count, total, status=''):
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
+import re
+from Trie import Trie
 
-    percents = round(100.0 * count / float(total), 1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+trie = Trie()
 
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
-    sys.stdout.flush()
-
-
-total = 1000
-i = 0
-while i < total:
-    progress(i, total, status='Doing very long job')
-    time.sleep(0.5)  # emulating long-playing job
-    i += 2
+trie.add("hello")
+print(trie.contains("hello")
+trie.add("hello")

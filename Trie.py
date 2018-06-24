@@ -1,4 +1,3 @@
-
 SOW = '^'
 EOW = '$'
 
@@ -9,7 +8,6 @@ class Trie_node:
 
     def toString(self):
         return str(self.letter)
-
 
 
 class Trie:
