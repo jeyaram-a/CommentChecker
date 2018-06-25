@@ -144,7 +144,7 @@ pal_gic_install_isr(UINT32 int_id,  VOID *isr)
   if (EFI_ERROR(Status)) {
     Status =  gInterrupt->RegisterInterruptSource (gInterrupt, int_id, NULL);  //Deregister existing handler
     Status = gInterrupt->RegisterInterruptSource (gInterrupt, int_id, isr);  //register our Handler.
-    //Even if this fails. there is nothing we can do in UEFI mode
+    //Even if this fails. there is nothing we can do in UEFI mode hurrrrrrrrrrrray
   }
 
   return 0;

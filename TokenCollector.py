@@ -81,15 +81,16 @@ class TokenCollector:
 
         while True:
             for entry in os.listdir(root):
-                if os.path.isdir(entry):
+                if os.path.isdir(os.path.join(root, entry)):
                     if entry in self.ignore_pattern:
                         continue 
                     dir.append(os.path.join(root, entry))
                 else:
                     if entry in self.ignore_pattern:
                         continue
-                    sys.stdout.write("Collecting tokens from %s ..\n"%os.path.join(root, entry))
-                    contents = TokenCollector.get_tokens_from_file(os.path.join(root, entry))
+                    if re.match(".*\.c|.*\.h",os.path.join(root, entry)):
+                        sys.stdout.write("Collecting tokens from %s ..\n"%os.path.join(root, entry))
+                        contents = TokenCollector.get_tokens_from_file(os.path.join(root, entry))
                     for i in contents:
                         if i not in all_tokens:
                             all_tokens.append(i)
