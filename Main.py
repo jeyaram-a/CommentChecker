@@ -54,7 +54,6 @@ if not options.include == None:
     for f in include:
         file = open(str(os.path.join(os.getcwd(), f)), "r")
         line = file.readline()
-        print("Line in include ", line)
         while line != "":
              i += 1
              t.count += 1

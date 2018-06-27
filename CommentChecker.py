@@ -22,7 +22,7 @@ class CommentChecker:
 
         regex = r"/\*(.*?)\*/"
         regex1 = r"//(.*?)\n"
-        split_regex = "_| |\n|\.|/|'|!|@|\(|\)|,|\"|:|\>|\<|;|#|\?|\*|-|{|}|[0-9]|\|"
+        split_regex = "_| |\n|\.|=|\+|/|'|!|@|\(|\)|,|\"|:|\>|\<|;|#|\?|\*|-|{|}|[0-9]|\|\[|\]"
         print("   Checking block comments")
         matches = re.finditer(regex, contents, re.MULTILINE | re.DOTALL)
         for matchNum, match in enumerate(matches):
@@ -58,7 +58,7 @@ class CommentChecker:
                 else:
                     if entry in self.ignore_pattern:
                         continue
-                    if re.match(".*\.c|.*\.h",os.path.join(root, entry)):
+                    if re.match(".*\.c$|.*\.h$",os.path.join(root, entry)):
                         CommentChecker.check_comments(os.path.join(root, entry), trie)
             if len(dir) == 0:
                 break
