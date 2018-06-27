@@ -1,7 +1,11 @@
+import sys
+import re
+import os
+from optparse import OptionParser
 from Trie import Trie
 from TokenCollector import TokenCollector
 from CommentChecker import CommentChecker
-import sys
+
 
 def progress(count, total, status=''):
     bar_len = 60
@@ -12,7 +16,21 @@ def progress(count, total, status=''):
     sys.stdout.flush()
 
 
+parser = OptionParser()
+parser.add_option('-i', '--include', dest = 'include', help ='Includes the file contents in dictionary', metavar = 'FILE')
+parser.add_option('-e', '--exclude', dest = 'exclude', help ='Excludes anything that matches the pattern', metavar = 'FILE')
+parser.add_option('-c', '--check', dest = 'check', help ='Includes the file contents in dictionary', metavar = 'FILE')
 
+(options, args) = parser.parse_args()
+print(options.include)
+print(options.exclude)
+if options.check == None:
+    print("No files to check")
+    print("Exiting")
+    sys.exit()
+    exclude = []
+if options.exclude != None:
+    exclude = re.split(" ",  options.exclude)
 file = open('words.txt', 'r')
 line = file.readline()
 count = 0
@@ -28,24 +46,34 @@ while line != "":
     t.add(line.lower())
     line = file.readline()
 print("\n")
-token_collector = TokenCollector("./test",[".git", ".idea", "__pycache__", "words.txt"])
+
+if not options.include == None:
+    include = options.include
+    include = re.split(" ", include)
+
+    for f in include:
+        file = open(str(os.path.join(os.getcwd(), f)), "r")
+        line = file.readline()
+        print("Line in include ", line)
+        while line != "":
+             i += 1
+             t.count += 1
+             line = line[0:len(line)-1]
+             t.add(line.lower())
+             line = file.readline()
+print("\n")
+
+token_collector = TokenCollector(options.check, exclude)
 all_tokens = token_collector.get_tokens()
 count = 0
 token_count = len(all_tokens)
+
 
 for token in all_tokens:
     count += 1
     progress(count, token_count, status="Loading tokens")
     t.add(token)
 print("\n")
-print("-------------------------", t.contains("apache"))
-cc = CommentChecker("./test",[".git", ".idea", "__pycache__", "words.txt"])
+cc = CommentChecker(options.check, exclude)
 cc.do_something(t)
-
-
-
-    
-
-
-
 

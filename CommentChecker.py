@@ -1,12 +1,13 @@
 import re
 import os
+import sys
 
 class CommentChecker:
 
     def __init__(self, root_path, ignore_pattern):
         self.root_path      = root_path
         self.ignore_pattern = ignore_pattern
-        
+
     @staticmethod
     def list_to_string(list_):
         file_contents = ""
@@ -31,7 +32,7 @@ class CommentChecker:
                 comment = [i.lower() for i in comment if (len(i) == 1 and (i == 'a' or i =='i')) or len(i) > 1]
                 for word in comment:
                     if not trie.contains(word):
-                        print("      Not in dictionary ", word)
+                        sys.stdout.write("      Not in dictionary \033[1;31m%s\033[0m\n"%word)
         print("   Checking single line comments")
         matches = re.finditer(regex1, contents, re.MULTILINE | re.DOTALL)
         for matchNum, match in enumerate(matches):
@@ -41,9 +42,9 @@ class CommentChecker:
                 comment = [i.lower() for i in comment if (len(i) == 1 and (i == 'a' or i =='i')) or len(i) > 1]
                 for word in comment:
                     if not trie.contains(word):
-                        print("      Not in dictionary ", word)
-        print("-----------------------------------------------")                
-        
+                        sys.stdout.write("      Not in dictionary \033[1;31m%s\033[0m\n"%word)
+        print("-----------------------------------------------")
+
     def do_something(self, trie):
         root = self.root_path
         dir = []
