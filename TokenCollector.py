@@ -1,14 +1,15 @@
 import os
 import re
 import sys
-from Trie import Trie
 
 class TokenCollector:
-
+    #root_path =start location for searching
+    #ignore_pattern = folder or file to be ignored
     def __init__(self, root_path, ignore_pattern):
         self.root_path      = root_path
         self.ignore_pattern = ignore_pattern
 
+    #returns all tokens (other than comments)
     @staticmethod
     def get_code(file_name):
         file_ = open(file_name, "r")
@@ -17,6 +18,7 @@ class TokenCollector:
         file_length = len(file_contents_list)
         i = 0
         while file_length > 0:
+            #dealing with block comments
             if i+1 < len(file_contents_list) and file_contents_list[i] == '/' and file_contents_list[i+1] == '*':
                 del(file_contents_list[i])
                 del(file_contents_list[i])
@@ -26,6 +28,7 @@ class TokenCollector:
                 del(file_contents_list[i])
                 del(file_contents_list[i])
                 file_length -= 4
+            #dealing with single line comments
             if i+1 < len(file_contents_list) and file_contents_list[i] == '/' and file_contents_list[i+1] == '/' :
                 del(file_contents_list[i])
                 del(file_contents_list[i])
@@ -49,30 +52,18 @@ class TokenCollector:
                 continue
             file_contents += file_contents_list[i]
             i+=1
-
         return file_contents
 
-    @staticmethod
-    def list_to_string(list_):
-        file_contents = ""
-        for letter in list_:
-            file_contents += letter
-
-        return file_contents
-
+    #Gets tokens from file contents
     @staticmethod
     def get_tokens_from_file(file_name):
         file_contents = TokenCollector.get_code(file_name)
-        list_ = re.split("_| |\n|\.", file_contents)
+        split_regex = "_| |\n|\.|=|\+|/|'|!|@|\(|\)|,|\"|:|\>|\<|;|#|\?|\*|-|{|}|[0-9]|\\\|\|\[|\]|&|\|"
+        list_ = re.split(split_regex, file_contents)
         list_ = [i.lower() for i in list_ if (len(i) == 1 and (i == 'a' or i =='i')) or len(i) > 1]
         return list_
 
-    @staticmethod
-    def add_to_trie(contents, trie):
-        for word in contents:
-            trie.add(word)
-
-
+    #Reads all .c and .h files from root_path recursively and collects tokens
     def get_tokens(self):
         root = self.root_path
         dir = []
@@ -80,20 +71,18 @@ class TokenCollector:
 
         while True:
             for entry in os.listdir(root):
+                if entry in self.ignore_pattern or os.path.isdir(os.path.join(root, entry)) in self.ignore_pattern:
+                    continue
                 if os.path.isdir(os.path.join(root, entry)):
-                    if entry in self.ignore_pattern:
-                        continue
                     dir.append(os.path.join(root, entry))
                 else:
-                    if entry in self.ignore_pattern:
-                        continue
+                    #Read only .c or .h files
                     if re.match(".*\.c$|.*\.h$",os.path.join(root, entry)):
                         sys.stdout.write("Collecting tokens from %s ..\n"%os.path.join(root, entry))
                         contents = TokenCollector.get_tokens_from_file(os.path.join(root, entry))
-                        for i in contents:
-                           if i not in all_tokens:
-                                all_tokens.append(i)
-
+                        for token in contents:
+                           if token not in all_tokens:
+                                all_tokens.append(token)
             if len(dir) == 0:
                 break
             root = dir[0]
